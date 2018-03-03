@@ -57,13 +57,8 @@ class AssessmentRBACFactory(object):
 
   def read(self):
     """Test access to model endpoint."""
-    responses = []
     # TODO: check correctness of this
-    responses.append(self.api.get_query(all_models.Assessment, ""))
-    responses.append(
-        self.api.get_query(all_models.Assessment, self.assessment_id)
-    )
-    return responses
+    return self.api.get_query(all_models.Assessment, self.assessment_id)
 
   def update(self):
     asmnt = all_models.Assessment.query.get(self.assessment_id)

@@ -22,6 +22,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "clone": False,
               "read_revisions": True,
               "map_snapshot": False,
+              "deprecate": False,
+              "archive": False,
+              "unarchive": False,
           },
           "Assessment": {
               "create": True,
@@ -49,6 +52,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "clone": False,
               "read_revisions": True,
               "map_snapshot": False,
+              "deprecate": False,
+              "archive": False,
+              "unarchive": False,
           },
           "Assessment": {
               "create": True,
@@ -75,6 +81,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "clone": True,
               "read_revisions": True,
               "map_snapshot": True,
+              "deprecate": True,
+              "archive": False,
+              "unarchive": False,
           },
           "Assessment": {
               "create": True,

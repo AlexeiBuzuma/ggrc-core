@@ -26,10 +26,7 @@ class AuditRBACFactory(object):
     })
 
   def read(self):
-    responses = []
-    responses.append(self.api.get_query(all_models.Audit, ""))
-    responses.append(self.api.get_query(all_models.Audit, self.audit_id))
-    return responses
+    return self.api.get_query(all_models.Audit, self.audit_id)
 
   def update(self):
     audit = all_models.Audit.query.get(self.audit_id)
@@ -72,3 +69,24 @@ class AuditRBACFactory(object):
         source=audit,
         destination=snapshot,
     )[0]
+
+  def unmap_snapshot(self):
+    pass
+
+  def deprecate(self):
+    audit = all_models.Audit.query.get(self.audit_id)
+    return self.api.modify_object(audit, {
+        "status": "Deprecated"
+    })
+
+  def archive(self):
+    audit = all_models.Audit.query.get(self.audit_id)
+    return self.api.modify_object(audit, {
+        "archived": True
+    })
+
+  def unarchive(self):
+    audit = all_models.Audit.query.get(self.audit_id)
+    return self.api.modify_object(audit, {
+        "archived": False
+    })
