@@ -57,16 +57,17 @@ class TestAssigneesPropagation(base.TestACLPropagation):
 
   def init_factory(self, role, model):
     with factories.single_commit():
-      audit_id = factories.AuditFactory().id
-      assessment_id = factories.AssessmentFactory(
-        audit_id=audit_id,
-        access_control_list=[{
-          "ac_role": self.assignees_acr,
-          "person": self.people[role]
-        }]
-      ).id
+      audit = factories.AuditFactory()
+      assessment = factories.AssessmentFactory(
+          audit=audit,
+          access_control_list=[{
+              "ac_role": self.assignees_acr,
+              "person": self.people[role]
+          }]
+      )
+      factories.RelationshipFactory(source=audit, destination=assessment)
     rbac_factory = rbac_factories.get_factory(model)(
-      audit_id, assessment_id, self.people[role].id
+        audit.id, assessment.id, self.people[role].id
     )
     return rbac_factory
 

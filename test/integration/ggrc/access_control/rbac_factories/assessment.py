@@ -4,15 +4,16 @@ from integration.ggrc.models import factories
 
 
 class AssessmentRBACFactory(object):
-  def __init__(self, audit_id, assessment_id, user_id):
+  def __init__(self, audit_id, assessment_id=None, user_id=None):
     self.api = Api()
     self.objgen = generator.ObjectGenerator()
     self.objgen.api = self.api
     self.audit_id = audit_id
     self.assessment_id = assessment_id
 
-    user = all_models.Person.query.get(user_id)
-    self.api.set_user(user)
+    if user_id:
+      user = all_models.Person.query.get(user_id)
+      self.api.set_user(user)
 
   def create(self):
     return self.api.post(all_models.Assessment, {
@@ -83,11 +84,18 @@ class AssessmentRBACFactory(object):
     return responses
 
   def map_snapshot(self):
-    control = factories.ControlFactory()
+    audit = all_models.Audit.query.get(self.audit_id)
     assessment = all_models.Assessment.query.get(self.assessment_id)
-    snapshot = TestCase._create_snapshots(assessment, [control])[0]
+    control = factories.ControlFactory()
+    snapshot = TestCase._create_snapshots(audit, [control])[0]
 
     return self.objgen.generate_relationship(
         source=assessment,
         destination=snapshot,
     )[0]
+
+  def deprecate(self):
+    assessment = all_models.Assessment.query.get(self.assessment_id)
+    return self.api.modify_object(assessment, {
+        "status": "Deprecated"
+    })

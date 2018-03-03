@@ -1,19 +1,19 @@
-from ggrc import db
 from ggrc.models import all_models, get_model
 from integration.ggrc import Api, TestCase, generator
 from integration.ggrc.models import factories
 
 
 class AuditRBACFactory(object):
-  def __init__(self, program_id, audit_id, user_id):
+  def __init__(self, program_id, audit_id=None, user_id=None):
     self.api = Api()
     self.objgen = generator.ObjectGenerator()
     self.objgen.api = self.api
     self.program_id = program_id
     self.audit_id = audit_id
 
-    user = all_models.Person.query.get(user_id)
-    self.api.set_user(user)
+    if user_id:
+      user = all_models.Person.query.get(user_id)
+      self.api.set_user(user)
 
   def create(self):
     return self.api.post(all_models.Audit, {

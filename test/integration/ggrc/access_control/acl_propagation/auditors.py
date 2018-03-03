@@ -30,10 +30,11 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "create": True,
               "generate": True,
               "read": True,
-              "update": False,
+              "update": True,
               "delete": False,
               "read_revisions": True,
-              "map_snapshot": False,
+              "map_snapshot": True,
+              "deprecate": True,
           },
           "AssessmentTemplate": {
               "create": False,
@@ -60,9 +61,11 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "create": True,
               "generate": True,
               "read": True,
-              "update": False,
+              "update": True,
               "delete": False,
-              "map_snapshot": False,
+              "read_revisions": True,
+              "map_snapshot": True,
+              "deprecate": True,
           },
           "AssessmentTemplate": {
               "create": False,
@@ -91,7 +94,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "read": True,
               "update": True,
               "delete": True,
+              "read_revisions": True,
               "map_snapshot": True,
+              "deprecate": True,
           },
           "AssessmentTemplate": {
               "create": True,
@@ -113,29 +118,31 @@ class TestAuditorsPropagation(base.TestACLPropagation):
 
   def init_factory(self, role, model):
     with factories.single_commit():
-      program_id = factories.ProgramFactory().id
-      audit_id = factories.AuditFactory(
-        program_id=program_id,
-        access_control_list=[{
-          "ac_role": self.auditor_acr,
-          "person": self.people[role],
-        }]
-      ).id
+      program = factories.ProgramFactory()
+      audit = factories.AuditFactory(
+          program=program,
+          access_control_list=[{
+              "ac_role": self.auditor_acr,
+              "person": self.people[role],
+          }]
+      )
+      factories.RelationshipFactory(source=program, destination=audit)
 
     rbac_factory = None
     if model == "Audit":
       rbac_factory = rbac_factories.get_factory(model)(
-        program_id, audit_id, self.people[role].id
+          program.id, audit.id, self.people[role].id
       )
     elif model == "Assessment":
-      assessment_id = factories.AssessmentFactory(audit_id=audit_id).id
+      assessment = factories.AssessmentFactory(audit=audit)
+      factories.RelationshipFactory(source=audit, destination=assessment)
       rbac_factory = rbac_factories.get_factory(model)(
-        audit_id, assessment_id, self.people[role].id
+          audit.id, assessment.id, self.people[role].id
       )
     elif model == "AssessmentTemplate":
-      template_id = factories.AssessmentTemplateFactory(audit_id=audit_id).id
+      template_id = factories.AssessmentTemplateFactory(audit_id=audit.id).id
       rbac_factory = rbac_factories.get_factory(model)(
-        audit_id, template_id, self.people[role].id
+          audit.id, template_id, self.people[role].id
       )
     return rbac_factory
 
