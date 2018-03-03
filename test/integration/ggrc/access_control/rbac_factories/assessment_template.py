@@ -1,3 +1,6 @@
+# Copyright (C) 2018 Google Inc.
+# Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+
 from ggrc.models import all_models, get_model
 from integration.ggrc import Api, generator
 from integration.ggrc.models import factories

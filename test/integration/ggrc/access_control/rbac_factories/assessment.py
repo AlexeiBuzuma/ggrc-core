@@ -1,3 +1,6 @@
+# Copyright (C) 2018 Google Inc.
+# Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+
 from ggrc.models import all_models, get_model
 from integration.ggrc import Api, TestCase, generator
 from integration.ggrc.models import factories
@@ -99,3 +102,46 @@ class AssessmentRBACFactory(object):
     return self.api.modify_object(assessment, {
         "status": "Deprecated"
     })
+
+  def map_comment(self):
+    assessment = all_models.Assessment.query.get(self.assessment_id)
+
+    return self.api.put(assessment, {
+        "actions": {
+            "add_related": [{
+                "id": None,
+                "type": "Comment",
+                "description": "comment",
+                "custom_attribute_definition_id": None,
+            }]
+        }
+    })
+
+  def map_document(self):
+    assessment = all_models.Assessment.query.get(self.assessment_id)
+    return self.api.put(assessment, {
+        "actions": {
+            "add_related": [{
+                "id": None,
+                "type": "Document",
+                "document_type": "EVIDENCE",
+                "title": "evidence1",
+                "link": "google3.com",
+            }]
+        }
+    })
+
+  def map_issue(self):
+    assessment = all_models.Assessment.query.get(self.assessment_id)
+    data = [{
+        "issue": {
+            "assessment": {
+                "id": assessment.id,
+                "type": assessment.type,
+            },
+            "title": factories.random_str(),
+            "context": None
+        }
+    }]
+
+    return self.api.post(all_models.Issue, data)

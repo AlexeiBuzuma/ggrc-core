@@ -1,3 +1,6 @@
+# Copyright (C) 2018 Google Inc.
+# Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+
 import ddt
 
 from ggrc.models import all_models
@@ -25,6 +28,7 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "deprecate": False,
               "archive": False,
               "unarchive": False,
+              "map_issue": False,
           },
           "Assessment": {
               "create": True,
@@ -35,6 +39,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "read_revisions": True,
               "map_snapshot": True,
               "deprecate": True,
+              "map_issue": True,
+              "map_comment": True,
+              "map_document": True,
           },
           "AssessmentTemplate": {
               "create": False,
@@ -56,6 +63,7 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "deprecate": False,
               "archive": False,
               "unarchive": False,
+              "map_issue": False,
           },
           "Assessment": {
               "create": True,
@@ -66,6 +74,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "read_revisions": True,
               "map_snapshot": True,
               "deprecate": True,
+              "map_issue": True,
+              "map_comment": True,
+              "map_document": True,
           },
           "AssessmentTemplate": {
               "create": False,
@@ -87,6 +98,7 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "deprecate": True,
               "archive": False,
               "unarchive": False,
+              "map_issue": True,
           },
           "Assessment": {
               "create": True,
@@ -97,6 +109,9 @@ class TestAuditorsPropagation(base.TestACLPropagation):
               "read_revisions": True,
               "map_snapshot": True,
               "deprecate": True,
+              "map_issue": True,
+              "map_comment": True,
+              "map_document": True,
           },
           "AssessmentTemplate": {
               "create": True,

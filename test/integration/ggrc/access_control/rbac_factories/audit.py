@@ -1,3 +1,6 @@
+# Copyright (C) 2018 Google Inc.
+# Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+
 from ggrc.models import all_models, get_model
 from integration.ggrc import Api, TestCase, generator
 from integration.ggrc.models import factories
@@ -90,3 +93,12 @@ class AuditRBACFactory(object):
     return self.api.modify_object(audit, {
         "archived": False
     })
+
+  def map_issue(self):
+    audit = all_models.Audit.query.get(self.audit_id)
+    issue = factories.IssueFactory()
+
+    return self.objgen.generate_relationship(
+        source=audit,
+        destination=issue
+    )[0]
