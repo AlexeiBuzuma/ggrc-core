@@ -21,7 +21,7 @@ from werkzeug.exceptions import (
 
 from ggrc.gdrive import file_actions as fa
 from ggrc.app import app
-from ggrc.converters.base import Converter
+from ggrc.converters.base import ExportConverter, ImportConverter
 from ggrc.converters.import_helper import generate_csv_string
 from ggrc.query.exceptions import BadQueryException
 from ggrc.query.builder import QueryHelper
@@ -69,8 +69,8 @@ def handle_export_request():
       query_helper = QueryHelper(objects)
       ids_by_type = query_helper.get_ids()
     with benchmark("Generate CSV array"):
-      converter = Converter(ids_by_type=ids_by_type)
-      csv_data = converter.to_array()
+      converter = ExportConverter(ids_by_type=ids_by_type)
+      csv_data = converter.export_csv_data()
     with benchmark("Generate CSV string"):
       csv_string = generate_csv_string(csv_data)
     with benchmark("Make response."):
@@ -131,8 +131,8 @@ def handle_import_request():
   dry_run, file_data = parse_import_request()
   csv_data = fa.get_gdrive_file(file_data)
   try:
-    converter = Converter(dry_run=dry_run, csv_data=csv_data)
-    converter.import_csv()
+    converter = ImportConverter(dry_run=dry_run, csv_data=csv_data)
+    converter.import_csv_data()
     response_data = converter.get_info()
     response_json = json.dumps(response_data)
     headers = [("Content-Type", "application/json")]
