@@ -15,6 +15,15 @@ from ggrc.models.hooks.issue_tracker import \
     issue_tracker_params_container as params_container
 
 
+ISSUE_STATUS_MAPPING = {
+    "Draft": "ASSIGNED",
+    "Active": "ACCEPTED",
+    "Fixed": "FIXED",
+    "Fixed and Verified": "VERIFIED",
+    "Deprecated": "OBSOLETE",
+}
+
+
 class BaseIssueTrackerParamsBuilder(object):
   """Base issue tracker params builder class.
 
@@ -126,8 +135,10 @@ class IssueParamsBuilder(BaseIssueTrackerParamsBuilder):
     if reporter_email not in allowed_emails:
       obj.add_warning(self.EXCLUDE_REPORTER_EMAIL_ERROR_MSG)
       return self.params
-
-    self.params.status = self.ASSIGNED_ISSUE_STATUS
+    status_mapping = ISSUE_STATUS_MAPPING
+    self.params.status = status_mapping.get(
+        obj.status, self.ASSIGNED_ISSUE_STATUS
+    )
     self.params.add_comment(self.INITIAL_COMMENT_TMPL.format(
         model=self.MODEL_NAME,
         link=self.get_ggrc_object_url(obj)

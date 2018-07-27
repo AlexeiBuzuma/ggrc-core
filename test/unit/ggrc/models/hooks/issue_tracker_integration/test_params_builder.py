@@ -291,6 +291,43 @@ class TestIssueQueryBuilder(unittest.TestCase):
     url_builder_mock.assert_called_once()
     self.assertDictEqual(params.get_issue_tracker_params(), expected_result)
 
+  @ddt.data(
+      ("Draft", "ASSIGNED", ),
+      ("Active", "ACCEPTED", ),
+      ("Fixed", "FIXED", ),
+      ("Fixed and Verified", "VERIFIED", ),
+      ("Deprecated", "OBSOLETE", ),
+  )
+  @ddt.unpack
+  @mock.patch.object(params_builder.BaseIssueTrackerParamsBuilder,
+                     "get_ggrc_object_url",
+                     return_value="http://issue_url.com")
+  def test_statuses_on_create_issue(self, ggrc_status,
+                                    issue_tracker_status, url_builder_mock):
+    """Test setting correct statuses on issue creation event."""
+    # Arrange test data.
+    mock_object = mock.MagicMock()
+    mock_object.modified_by.email = "reporter@email.com"
+    mock_object.status = ggrc_status
+
+    issue_tracker_info = {
+        "enabled": True,
+    }
+
+    # Perform action.
+    with mock.patch.object(
+        integration_utils,
+        "exclude_auditor_emails",
+        return_value={"reporter@email.com", }
+    ):
+      params = self.builder.build_create_issue_tracker_params(
+          mock_object,
+          issue_tracker_info
+      )
+    # Assert results.
+    url_builder_mock.assert_called_once()
+    self.assertEquals(params.status, issue_tracker_status)
+
   def test_build_delete_params(self):
     """Test 'build_delete_params' method."""
     expected_result = {
