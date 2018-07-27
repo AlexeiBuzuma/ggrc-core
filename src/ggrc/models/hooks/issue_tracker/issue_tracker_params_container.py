@@ -5,6 +5,8 @@
 
 # pylint: disable=too-many-instance-attributes
 
+import unicodedata
+
 from ggrc.models import exceptions
 from ggrc.utils.custom_dict import MissingKeyDict
 
@@ -128,6 +130,9 @@ class IssueTrackerParamsContainer(object):
 
   def add_comment(self, comment):
     """Append comment into container."""
+    # Issue tracker raises an error if we send non-breaking space in request
+    # That's why we have to normalize string and replace those symbols.
+    comment = unicodedata.normalize("NFKC", unicode(comment))
     self._comments.append(comment)
 
   def is_empty(self):

@@ -144,3 +144,10 @@ class TestIssueTrackerParamsContainer(unittest.TestCase):
     self.fill_params_container_with_data()
     issue_tracker_params = self.params.get_params_for_ggrc_object()
     self.assertDictEqual(issue_tracker_params, expected_result)
+
+  def test_comment_with_non_breaking_space(self):
+    """Test building comment with non-breaking space symbol."""
+    test_comment = u"Test comment with non-breaking space: \xa0"
+    expected_result = u"Test comment with non-breaking space:  "
+    self.params.add_comment(test_comment)
+    self.assertEquals(self.params.comment, expected_result)
