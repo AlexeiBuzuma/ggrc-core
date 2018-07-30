@@ -313,7 +313,6 @@ class TestIssueQueryBuilder(unittest.TestCase):
     issue_tracker_info = {
         "enabled": True,
     }
-
     # Perform action.
     with mock.patch.object(
         integration_utils,

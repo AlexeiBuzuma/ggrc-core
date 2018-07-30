@@ -105,7 +105,7 @@ class IssueParamsBuilder(BaseIssueTrackerParamsBuilder):
 
   MODEL_NAME = "Issue"
 
-  ASSIGNED_ISSUE_STATUS = "ASSIGNED"
+  ASSIGNED_STATUS = "ASSIGNED"
 
   DESCRIPTION_TMPL = u"Following is the issue Description from GGRC: {}"
   REMEDIATION_PLAN_TMPL = (
@@ -136,9 +136,7 @@ class IssueParamsBuilder(BaseIssueTrackerParamsBuilder):
       obj.add_warning(self.EXCLUDE_REPORTER_EMAIL_ERROR_MSG)
       return self.params
     status_mapping = ISSUE_STATUS_MAPPING
-    self.params.status = status_mapping.get(
-        obj.status, self.ASSIGNED_ISSUE_STATUS
-    )
+    self.params.status = status_mapping.get(obj.status, self.ASSIGNED_STATUS)
     self.params.add_comment(self.INITIAL_COMMENT_TMPL.format(
         model=self.MODEL_NAME,
         link=self.get_ggrc_object_url(obj)
